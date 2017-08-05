@@ -1,4 +1,4 @@
-#Termux-mpd-notification
+# Termux-mpd-notification
 
 This is an companion program for mpd on [Termux](http://termux.com). It displays a notification with media controls.
 
