@@ -13,8 +13,9 @@ This is an companion program for mpd on [Termux](http://termux.com). It displays
 * `termux-api`
 * `python`
 * `mpd`
+* `mpc`
 ```
-apt install termux-api python mpd
+apt install termux-api python mpd mpc
 ```
 
 ## Installation
