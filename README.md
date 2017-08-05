@@ -1,6 +1,6 @@
-#Termux-Mpv
+#Termux-mpd-notification
 
-This is a wrapper for mpv on [Termux](http://termux.com). It displays a notification with media controls
+This is an companion program for mpd on [Termux](http://termux.com). It displays a notification with media controls.
 
 ![Screenshot](/Screenshots/Notification-Media-Controls-small.png)
 
@@ -12,17 +12,22 @@ This is a wrapper for mpv on [Termux](http://termux.com). It displays a notifica
 
 * `termux-api`
 * `python`
-* `mpv`
+* `mpd`
 ```
-apt install termux-api python mpv
+apt install termux-api python mpd
 ```
 
 ## Installation
 
 ```
-pip install git+https://github.com/Neo-Oli/Termux-Mpv
+pip install git+https://github.com/Neo-Oli/termux-mpd-notifications
 ```
 
 ## Usage
 
-`termuxmpv` is a drop-in replacement for `mpv`. All arguments get forwarded to mpv.
+While `termux-mpd-notification` runs, notifications for playing music in `mpd` will be shown. I suggest running it as a [service](https://github.com/Neo-Oli/termux-services/)
+
+
+## See also
+
+https://github.com/Neo-Oli/termux-mpv for notifications for mpv
