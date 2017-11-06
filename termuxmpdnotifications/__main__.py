@@ -15,7 +15,6 @@ class termuxmpdnotifications:
             self.client.close()
         except:
             pass
-        self.updatehook()
     def __init__(self,args):
         # atexit.register(self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
@@ -59,8 +58,9 @@ class termuxmpdnotifications:
             self.visible=False
             command=["termux-notification-remove",self.notificationId]
             output=subprocess.call(command)
+        self.updatehook()
     def updatehook(self):
-        command="song-change-hook"
+        command="~/bin/hook-update-mpd"
         devnull=open(os.devnull, 'wb')
         try:
             subprocess.call(["sh", "-c", command],stdout=devnull,stderr=devnull)
