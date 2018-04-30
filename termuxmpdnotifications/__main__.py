@@ -49,8 +49,10 @@ class termuxmpdnotifications:
                 self.client.idle()
         except mpd.ConnectionError:
             self.err("Connection Aborted.")
+            self.removeNotification()
         except ConnectionRefusedError:
             self.err("Connection Refused.")
+            self.removeNotification()
     def err(self,out):
         print(out,file=sys.stderr)
     def removeNotification(self):
