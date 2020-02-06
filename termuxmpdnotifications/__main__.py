@@ -27,7 +27,7 @@ class termuxmpdnotifications:
 
 
         self.client=MPDClient()
-        self.notificationId=str(time.time())
+        self.notificationId="termux-mpd-notification"
         if options.host:
             self.host=options.host
         elif 'MPD_HOST' in os.environ:
