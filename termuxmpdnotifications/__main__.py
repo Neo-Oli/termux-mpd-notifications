@@ -109,6 +109,7 @@ class termuxmpdnotifications:
                 break
         tmpart=""
         if artpath:
+            # Sometimes the art may not be available to the api, for example if it is within a mount
             tmpart="{}/termux-mpd-notification-cover".format(os.environ['TMPDIR'])
             shutil.copy(artpath,tmpart)
         command=[
