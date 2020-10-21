@@ -18,10 +18,15 @@ class termuxmpdnotifications:
             self.client.close()
         except:
             pass
+        try:
+            os.remove(self.tmpart)
+        except:
+            pass
 
     def __init__(self, args):
         # atexit.register(self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
+        signal.signal(signal.SIGINT, self.cleanup)
         self.visible = False
         parser = argparse.ArgumentParser()
         parser.description = "Displays a Notification in Termux with the currently playing Track in MPD and media controls"
@@ -31,6 +36,7 @@ class termuxmpdnotifications:
 
         self.client = MPDClient()
         self.notificationId = "termux-mpd-notification"
+        self.tmpart = "{}/termux-mpd-notification-cover".format(os.environ["TMPDIR"])
         if options.host:
             self.host = options.host
         elif "MPD_HOST" in os.environ:
@@ -116,7 +122,7 @@ class termuxmpdnotifications:
         tmpart = ""
         if artpath:
             # Sometimes the art may not be available to the api, for example if it is within a mount
-            tmpart = "{}/termux-mpd-notification-cover".format(os.environ["TMPDIR"])
+            tmpart = self.tmpart
             shutil.copy(artpath, tmpart)
         command = [
             "termux-notification",
