@@ -85,17 +85,6 @@ class termuxmpdnotifications:
     def updateNotification(self):
         self.updatehook()
         self.visible = True
-        # padding="           "
-        # disable padding for now
-        padding = ""
-        # playbutton="{}⏸{}".format(padding,padding)
-        # prevbutton="{}⏮{}".format(padding,padding)
-        # nextbutton="{}⏭{}".format(padding,padding)
-        playbutton = "{}❙❙{}".format(padding, padding)
-        prevbutton = "{}|◀◀{}".format(padding, padding)
-        nextbutton = "{}▶▶|{}".format(padding, padding)
-        if self.status["state"] == "pause":
-            playbutton = "{} ▶ {}".format(padding, padding)
         metadata = {}
         for attr in ["album", "artist", "title", "file"]:
             try:
