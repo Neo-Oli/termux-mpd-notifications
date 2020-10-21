@@ -6,6 +6,7 @@ import subprocess
 from mpd import MPDClient
 import mpd
 import time
+import shutil
 import argparse
 import signal
 class termuxmpdnotifications:
@@ -20,7 +21,7 @@ class termuxmpdnotifications:
         signal.signal(signal.SIGTERM, self.cleanup)
         self.visible=False
         parser = argparse.ArgumentParser()
-        parser.description="Best viewed when piped into `less -RS`"
+        parser.description="Displays a Notification in Termux with the currently playing Track in MPD and media controls"
         parser.add_argument('--host', help='Host')
         parser.add_argument('--port', default="6600", help='Port')
         options = parser.parse_args()
@@ -39,6 +40,7 @@ class termuxmpdnotifications:
         try:
             self.client.connect(self.host,self.port)
             self.err("Connected to MPD Version {}".format(self.client.mpd_version))
+            self.music_dir=self.client.listmounts()[0]['storage']
             while True:
                 self.status=self.client.status()
                 self.metadata=self.client.currentsong()
@@ -83,7 +85,7 @@ class termuxmpdnotifications:
         if self.status["state"] == "pause":
             playbutton="{} ▶ {}".format(padding,padding)
         metadata={}
-        for attr in ["album","artist","title"]:
+        for attr in ["album","artist","title","file"]:
             try:
                 metadata[attr]=self.metadata[attr]
             except KeyError:
@@ -95,23 +97,32 @@ class termuxmpdnotifications:
             title="Unknown"
         else:
             title=metadata["title"]
+        dirname=os.path.dirname("{}/{}".format(self.music_dir,metadata["file"]))
+        artpath=""
+        for segment in ["/", "/../"]:
+            for filename in ["cover.jpg", "cover.jpeg", "cover.png"]:
+                check_art="{}{}{}".format(dirname,segment,filename)
+                if os.path.exists(check_art):
+                    artpath=check_art
+                    break
+            if artpath:
+                break
+        tmpart=""
+        if artpath:
+            tmpart="{}/termux-mpd-notification-cover".format(os.environ['TMPDIR'])
+            shutil.copy(artpath,tmpart)
         command=[
             "termux-notification",
             "--id", self.notificationId,
             "--title", title,
             "--content", "{}, {}".format(metadata["artist"], metadata["album"]),
-            "--priority", "max",
-            # "--action", ";".join([
-                # "am start --user 0 -n com.termux/com.termux.app.TermuxActivity",
-                # "echo 'updateNotification'> {}".format(self.fifoname)
-                # ]),
-            "--button1", prevbutton,
-            "--button1-action","mpc prev {}".format(self.mpcinfo),
-            "--button2", playbutton,
-            "--button2-action","mpc toggle {}".format(self.mpcinfo),
-            "--button3", nextbutton,
-            "--button3-action","mpc next {}".format(self.mpcinfo),
+            "--type", "media",
+            "--media-previous","mpc prev {}".format(self.mpcinfo),
+            "--media-pause","mpc pause {}".format(self.mpcinfo),
+            "--media-play","mpc play {}".format(self.mpcinfo),
+            "--media-next","mpc next {}".format(self.mpcinfo),
             "--on-delete", "mpc stop {}".format(self.mpcinfo),
+            "--image-path", tmpart,
         ]
         output=subprocess.call(command)
 def main(args=None):
