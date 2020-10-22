@@ -127,10 +127,10 @@ class termuxmpdnotifications:
             "media",
             "--media-previous",
             "mpc prev {}".format(self.mpcinfo),
-            "--media-pause",
-            "mpc pause {}".format(self.mpcinfo),
             "--media-play",
-            "mpc play {}".format(self.mpcinfo),
+            "mpc toggle {}".format(self.mpcinfo),
+            "--media-pause",
+            "mpc toggle {}".format(self.mpcinfo),
             "--media-next",
             "mpc next {}".format(self.mpcinfo),
             "--on-delete",
@@ -138,6 +138,17 @@ class termuxmpdnotifications:
             "--image-path",
             tmpart,
         ]
+        if self.status["state"] == "pause":
+            command += [
+                "--icon",
+                "pause",
+            ]
+        else:
+            command += [
+                "--icon",
+                "play_arrow",
+            ]
+
         output = subprocess.call(command)
 
 
