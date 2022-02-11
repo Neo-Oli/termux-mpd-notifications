@@ -32,6 +32,7 @@ class termuxmpdnotifications:
         parser.description = "Displays a Notification in Termux with the currently playing Track in MPD and media controls"
         parser.add_argument("--host", help="Host")
         parser.add_argument("--port", default="6600", help="Port")
+        parser.add_argument("--musicdir", help="Music Directory")
         options = parser.parse_args()
 
         self.client = MPDClient()
@@ -48,7 +49,10 @@ class termuxmpdnotifications:
         try:
             self.client.connect(self.host, self.port)
             self.err("Connected to MPD Version {}".format(self.client.mpd_version))
-            self.music_dir = self.client.listmounts()[0]["storage"]
+            if options.music_dir:
+                self.music_dir = options.music_dir
+            else:
+                self.music_dir = self.client.listmounts()[0]["storage"]
             while True:
                 self.status = self.client.status()
                 self.metadata = self.client.currentsong()
@@ -63,7 +67,9 @@ class termuxmpdnotifications:
         except ConnectionRefusedError:
             self.err("Connection Refused.")
             self.removeNotification()
-
+         except KeyError:
+            self.error("Music Directory not found. Try specifying the path with --musicdir /absolute/path/to/music/directory")
+            
     def err(self, out):
         print(out, file=sys.stderr)
 
@@ -137,6 +143,7 @@ class termuxmpdnotifications:
             "mpc stop {}".format(self.mpcinfo),
             "--image-path",
             tmpart,
+            "--alert-once",
         ]
         if self.status["state"] == "pause":
             command += [
