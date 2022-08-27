@@ -119,6 +119,7 @@ class termuxmpdnotifications:
             self.notificationId,
             "--group",
             "termux-mpd-notifications",
+            "--alert-once",
             "--title",
             title,
             "--content",
