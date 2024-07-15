@@ -56,7 +56,7 @@ class termuxmpdnotifications:
                     self.removeNotification()
                 else:
                     self.updateNotification()
-                self.client.idle()
+                self.client.idle(["player"])
         except mpd.ConnectionError:
             self.err("Connection Aborted.")
             self.removeNotification()
